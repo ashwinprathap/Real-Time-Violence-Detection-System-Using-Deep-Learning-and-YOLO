@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Violence Detection System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Video -->
+    <video id="backgroundVideo" autoplay muted loop playsinline>
+        <source src="E:\DUK\SEM 3\mini project\results\webpage\videoplayback (2).mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Main Container -->
+    <div class="container">
+        <h1>Violence Detection System</h1>
+        <video id="cameraStream" autoplay muted playsinline></video>
+        <div class="button-container">
+            <button id="startDetection" onclick="startCamera()">Start Detection</button>
+            <button id="stopDetection" onclick="stopCamera()">Stop Detection</button>
+        </div>
+        <p id="statusMessage">Press "Start Detection" to begin.</p>
+    </div>
+
+    <script>
+        let videoStream = null;
+
+        // Function to start the camera stream
+        function startCamera() {
+            const videoElement = document.getElementById("cameraStream");
+            const statusMessage = document.getElementById("statusMessage");
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => {
+                        videoStream = stream;
+                        videoElement.srcObject = stream;
+                        statusMessage.innerText = "Detection is running...";
+                    })
+                    .catch(error => {
+                        console.error("Error accessing camera: ", error);
+                        statusMessage.innerText = "Error: Camera access denied.";
+                    });
+            } else {
+                statusMessage.innerText = "Error: Camera not supported by your browser.";
+            }
+        }
+
+        // Function to stop the camera stream
+        function stopCamera() {
+            const statusMessage = document.getElementById("statusMessage");
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+                statusMessage.innerText = "Detection stopped.";
+            }
+        }
+    </script>
+</body>
+</html>
